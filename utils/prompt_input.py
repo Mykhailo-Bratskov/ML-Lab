@@ -26,19 +26,20 @@ def ask_for_zip_folder(zip_folder: str):
 
 def ask_for_contest_rules(file: str = None, url_link: str = None):
     """
-    Get contest rules from either a file or URL link.
-    Validates the file exists if provided, or validates the URL format.
+    Get contest rules from a file (PDF or text), URL link, or skip.
+    Validates the file exists and has correct extension if provided.
     """
     rules_source = None
+    allowed_extensions = {'.pdf', '.txt', '.md', '.doc', '.docx'}
     
     while True:
-        choice = input("\nHow would you like to provide contest rules?\n1. From a file\n2. From a URL\n3. Skip\nEnter choice (1/2/3):\n> ").strip()
+        choice = input("\nHow would you like to provide contest rules?\n1. From a file (PDF/TXT/MD/DOC)\n2. From a URL\n3. Skip\nEnter choice (1/2/3):\n> ").strip()
         
         if choice == '1':
             if file:
                 file_path = Path(file)
             else:
-                file = input("\nEnter contest rules file path:\n> ").strip()
+                file = input("\nEnter contest rules file path (PDF/TXT/MD/DOC):\n> ").strip()
                 file_path = Path(file)
             
             # Check if file exists
@@ -49,7 +50,16 @@ def ask_for_contest_rules(file: str = None, url_link: str = None):
                     break
                 continue
             
-            rules_source = {'type': 'file', 'path': file_path}
+            # Validate file extension
+            file_extension = file_path.suffix.lower()
+            if file_extension not in allowed_extensions:
+                print(f"Error: Invalid file type '{file_extension}'. Allowed types: {', '.join(allowed_extensions)}")
+                retry = input("Try again? (yes/no):\n> ").strip().lower()
+                if retry != 'yes':
+                    break
+                continue
+            
+            rules_source = {'type': 'file', 'path': file_path, 'file_type': file_extension}
             print(f"✓ Contest rules loaded from: {file_path}")
             break
         
