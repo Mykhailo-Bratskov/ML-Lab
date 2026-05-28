@@ -130,7 +130,7 @@ def main():
         return
 
     try:
-        result = run_first_agent(user_input)
+        result = run_challenge_agent(user_input)
         print("\nExtracted Rules JSON:\n")
         print(result)
     except Exception as exc:
