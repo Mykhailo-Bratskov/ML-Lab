@@ -1,0 +1,10 @@
+google-genai
+python-dotenv
+pandas
+edfio
+
+pydantic
+langchain
+langcahin-community
+langchain-anthropic 
+langchain-openai
