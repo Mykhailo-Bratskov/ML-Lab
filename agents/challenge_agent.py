@@ -57,7 +57,13 @@ def _extract_from_url(url: str) -> str:
             temperature=0.1,
         ),
     )
-    return response.text
+    
+    print("--- Challenge Debrief Agent Token Usage ---")
+    print(f"Prompt Tokens (Input): {response.usage_metadata.prompt_token_count}")
+    print(f"Candidate Tokens (Output): {response.usage_metadata.candidates_token_count}")
+    print(f"Total Tokens: {response.usage_metadata.total_token_count}")
+
+    return response.text, (response.usage_metadata.prompt_token_count, response.usage_metadata.candidates_token_count)
 
 
 def _wait_for_operation(operation):
@@ -105,7 +111,7 @@ def _extract_from_pdf(pdf_path: Path) -> str:
     print(f"Candidate Tokens (Output): {response.usage_metadata.candidates_token_count}")
     print(f"Total Tokens: {response.usage_metadata.total_token_count}")
 
-    return response.text, response.usage_metadata.total_token_count
+    return response.text, (response.usage_metadata.prompt_token_count, response.usage_metadata.candidates_token_count)
 
 '''
 def run_challenge_agent(source: str) -> str:

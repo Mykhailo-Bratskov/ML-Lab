@@ -173,4 +173,4 @@ def run_research(metadata: str, challenge_agent_output: str) -> str:
     print(f"Candidate Tokens (Output): {interaction_inline.usage_metadata.candidates_token_count}")
     print(f"Total Tokens: {interaction_inline.usage_metadata.total_token_count}")
 
-    return interaction_inline, interaction_inline.usage_metadata.total_token_count
+    return interaction_inline, (interaction_inline.usage_metadata.prompt_token_count, interaction_inline.usage_metadata.candidates_token_count)

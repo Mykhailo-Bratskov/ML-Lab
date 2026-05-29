@@ -175,7 +175,7 @@ def run_data_analysis_agent(
         print("Token metadata unavailable.")
         total_tokens = 0
 
-    return response.text, total_tokens, {
+    return response.text, (response.usage_metadata.prompt_token_count, response.usage_metadata.candidates_token_count), {
         "files_selected": [str(f) for f in selected],
         "upload_manifest": upload_manifest,
     }

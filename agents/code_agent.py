@@ -113,4 +113,4 @@ def execute_code(dataset_access: str, actionable_plan: str) -> str:
     print(f"Candidate Tokens (Output): {interaction.usage_metadata.candidates_token_count}")
     print(f"Total Tokens: {interaction.usage_metadata.total_token_count}")
 
-    return interaction, interaction.usage_metadata.total_token_count
+    return interaction, (interaction.usage_metadata.prompt_token_count, interaction.usage_metadata.candidates_token_count)

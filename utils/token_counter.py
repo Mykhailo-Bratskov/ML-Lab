@@ -3,7 +3,7 @@
 # challenge_agent_billing_inp = 15000 ... etc.
 
 # --- Pricing Constants (Per 1M Tokens) ---
-PRICE_GEMINI_25_FLASH_IN = 0.30
+
 PRICE_GEMINI_25_FLASH_C = 0.075
 PRICE_GEMINI_25_FLASH_OUT = 2.50
 
@@ -20,7 +20,6 @@ PRICE_GEMINI_25_LITE_C = 0.025
 PRICE_GEMINI_25_LITE_OUT = 0.40
 
 # --- Cost Calculation ---
-def calculate_cost(inp_tokens, cache_tokens, out_tokens, price_in, price_c, price_out):
+def calculate_cost(inp_tokens,out_tokens, price_in, price_out):
     return (inp_tokens / 1_000_000) * price_in + \
-           (cache_tokens / 1_000_000) * price_c + \
            (out_tokens / 1_000_000) * price_out
