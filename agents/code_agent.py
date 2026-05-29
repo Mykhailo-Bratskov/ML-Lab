@@ -1,5 +1,7 @@
 import os
 import re
+import subprocess
+import sys
 from pathlib import Path
 from typing import Tuple, Optional, List
 from dotenv import load_dotenv
@@ -90,7 +92,8 @@ def execute_code(dataset_access: str, actionable_plan: str) -> str:
         agent=MODEL_ID,
         system_instruction=(
             "You are a Principal ML Engineer. You strictly adhere to the plan provided. "
-            "CRITICAL: Your final output must include the final working Python script enclosed in ```python code blocks."
+            "CRITICAL: Your final output must include one final working Python script enclosed in ```python code blocks. "
+            "The script must be executable locally, include if __name__ == '__main__', and print final metrics/results."
         ),
         input=input_payload,
         environment=environment_config,
@@ -105,6 +108,7 @@ def execute_code(dataset_access: str, actionable_plan: str) -> str:
         local_file_path = LOCAL_OUTPUT_DIR / "final_pipeline.py"
         local_file_path.write_text(final_code, encoding="utf-8")
         print(f"\n SUCCESS: Final code successfully extracted and saved locally to {local_file_path}")
+        run_generated_code(local_file_path, dataset_access)
     else:
         print("\n WARNING: No clean Python block was returned by the agent.")
     
@@ -114,3 +118,38 @@ def execute_code(dataset_access: str, actionable_plan: str) -> str:
     print(f"Total Tokens: {interaction.usage_metadata.total_token_count}")
 
     return interaction, (interaction.usage_metadata.prompt_token_count, interaction.usage_metadata.candidates_token_count)
+
+
+def run_generated_code(script_path: Path, dataset_access: str) -> None:
+    """
+    Execute generated pipeline locally and print stdout/stderr for quick validation.
+    """
+    dataset_path = Path(dataset_access).expanduser()
+    env = os.environ.copy()
+    env["DATASET_PATH"] = str(dataset_path)
+
+    print("\n Running generated pipeline locally...")
+    try:
+        cmd = [sys.executable, str(script_path), str(dataset_path)]
+        result = subprocess.run(
+            cmd,
+            cwd=Path.cwd(),
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=900,
+            check=False,
+        )
+        print(f"Generated pipeline exit code: {result.returncode}")
+        if result.stdout.strip():
+            print("\n--- Generated Pipeline STDOUT ---")
+            print(result.stdout[-8000:])
+        if result.stderr.strip():
+            print("\n--- Generated Pipeline STDERR ---")
+            print(result.stderr[-8000:])
+        if result.returncode != 0:
+            print("\n WARNING: Generated code execution failed. Review STDERR above.")
+    except subprocess.TimeoutExpired:
+        print("\n WARNING: Generated code timed out after 900 seconds.")
+    except Exception as exc:
+        print(f"\n WARNING: Could not run generated pipeline locally: {exc}")

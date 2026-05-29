@@ -1,26 +1,30 @@
 # Prompt Extraction
 from pathlib import Path
 
-def ask_for_zip_folder(zip_folder: str): 
-    zip = True
+def ask_for_zip_folder(zip_folder: str = None) -> str:
+    """
+    Ask for a dataset ZIP path and return it as a string path.
+    If `zip_folder` is provided, validate and return it directly.
+    """
     while True:
-        if zip:
-            zip_path = input("\nEnter zip folder's name with data:\n> ")
-            zip_path = Path(zip_folder)
-            # Check if file exists
-            if not zip_path.exists():
-                raise FileNotFoundError(f"Zip file not found: {zip_path}")
-        else:
-            query_text = input("\nAny addittional zip folders? Type 'quit' to exit:\n> ")
+        raw_path = zip_folder if zip_folder else input("\nEnter zip file path with data:\n> ").strip()
+        zip_path = Path(raw_path).expanduser()
 
-        if query_text.lower().strip() == 'quit': 
-            break
-    # getting input from the user 
-    zip_path = Path(zip_folder)
-    
-    # Check if file exists
-    if not zip_path.exists():
-        raise FileNotFoundError(f"Zip file not found: {zip_path}")
+        if not zip_path.exists():
+            print(f"Error: Zip file not found: {zip_path}")
+        elif not zip_path.is_file():
+            print(f"Error: Path is not a file: {zip_path}")
+        elif zip_path.suffix.lower() != ".zip":
+            print(f"Error: Expected a .zip file, got: {zip_path.suffix}")
+        else:
+            return str(zip_path)
+
+        if zip_folder:
+            raise FileNotFoundError(f"Invalid zip path provided: {zip_path}")
+
+        retry = input("Try again? (yes/no):\n> ").strip().lower()
+        if retry != "yes":
+            raise FileNotFoundError("No valid zip file path was provided.")
 
 
 

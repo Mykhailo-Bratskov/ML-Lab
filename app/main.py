@@ -7,11 +7,20 @@ import json
 
 def main():
     challenge_rules = prompt_input.ask_for_contest_rules()
+    if isinstance(challenge_rules, dict):
+        if challenge_rules.get("type") == "url":
+            challenge_rules = challenge_rules.get("url", "")
+        elif challenge_rules.get("type") == "file":
+            challenge_rules = str(challenge_rules.get("path", ""))
+        else:
+            challenge_rules = ""
+    if not challenge_rules:
+        raise ValueError("Contest rules are required (URL or PDF path).")
 
     if challenge_agent.is_url(challenge_rules):
         challenge_debrief, ch_tokens = challenge_agent._extract_from_url(challenge_rules)
     else:
-        challenge_debrief, ch_tokens = challenge_agent._extract_from_pdf(challenge_rules)
+        challenge_debrief, ch_tokens = challenge_agent._extract_from_pdf(Path(challenge_rules))
 
     dataset_path = prompt_input.ask_for_zip_folder()
 
@@ -106,7 +115,7 @@ def main():
     print("\n Actionable plan was created by the agent")
     print("\n For now we don't estimate costs for Planner Agent")
     #compiling code, and extracting final results of ML lab
-    code_output, code_tokens = code_agent.execute_code(dataset_path, plan_output)
+    code_output, code_tokens = code_agent.execute_code(str(extract_dir), plan_output)
     code_costs = token_counter.calculate_cost(code_tokens[0], code_tokens[1], 1.50, 9.00)
     print(f"\n Estimated costs from Code Agent: {code_costs}")
     time.sleep(5)
