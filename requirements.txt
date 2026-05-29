@@ -2,9 +2,8 @@ google-genai
 python-dotenv
 pandas
 edfio
-
 pydantic
 langchain
-langcahin-community
+langchain-community
 langchain-anthropic 
 langchain-openai

@@ -145,7 +145,7 @@ def _resolve_rules_content(challenge_agent_output: str) -> str:
     return candidate
 
 
-def run_research(metadata, challenge_agent_output):
+def run_research(metadata: str, challenge_agent_output: str) -> str:
     rules_content = _resolve_rules_content(challenge_agent_output)
 
     # Pass well-labeled blocks in the text payload
@@ -173,4 +173,4 @@ def run_research(metadata, challenge_agent_output):
     print(f"Candidate Tokens (Output): {interaction_inline.usage_metadata.candidates_token_count}")
     print(f"Total Tokens: {interaction_inline.usage_metadata.total_token_count}")
 
-    return interaction_inline
+    return interaction_inline, interaction_inline.usage_metadata.total_token_count

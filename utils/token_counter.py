@@ -1,15 +1,26 @@
-# Token Counter
-FREE_TIER_LIMIT = 4_000_000
+# --- Token Counts (From your variables) ---
+# Assuming these variables are populated dynamically during your run
+# challenge_agent_billing_inp = 15000 ... etc.
 
-def count_tokens(YOUR_DAILY_LIMIT: int, response: object): 
-    """# 1. Fetch your running total from your own database/file
-    current_total_used = get_saved_token_count() 
-    used_in_this_call = response.usage_metadata.total_token_count
+# --- Pricing Constants (Per 1M Tokens) ---
+PRICE_GEMINI_25_FLASH_IN = 0.30
+PRICE_GEMINI_25_FLASH_C = 0.075
+PRICE_GEMINI_25_FLASH_OUT = 2.50
 
-    # 3. Update your running total
-    new_total = current_total_used + used_in_this_call
-    save_token_count(new_total)
+PRICE_ANTIGRAVITY_IN = 1.50
+PRICE_ANTIGRAVITY_C = 0.15
+PRICE_ANTIGRAVITY_OUT = 9.00
 
-    # 4. Calculate your percentage
-    percentage_used = (new_total / YOUR_DAILY_LIMIT) * 100
-    print(f"You have used {percentage_used:.2f}% of your daily tokens.")"""
+PRICE_CLAUDE_35_SONNET_IN = 3.00
+PRICE_CLAUDE_35_SONNET_C = 0.30
+PRICE_CLAUDE_35_SONNET_OUT = 15.00
+
+PRICE_GEMINI_25_LITE_IN = 0.10
+PRICE_GEMINI_25_LITE_C = 0.025
+PRICE_GEMINI_25_LITE_OUT = 0.40
+
+# --- Cost Calculation ---
+def calculate_cost(inp_tokens, cache_tokens, out_tokens, price_in, price_c, price_out):
+    return (inp_tokens / 1_000_000) * price_in + \
+           (cache_tokens / 1_000_000) * price_c + \
+           (out_tokens / 1_000_000) * price_out

@@ -105,9 +105,9 @@ def _extract_from_pdf(pdf_path: Path) -> str:
     print(f"Candidate Tokens (Output): {response.usage_metadata.candidates_token_count}")
     print(f"Total Tokens: {response.usage_metadata.total_token_count}")
 
-    return response.text
+    return response.text, response.usage_metadata.total_token_count
 
-
+'''
 def run_challenge_agent(source: str) -> str:
     """
     Extract contest rules from either:
@@ -117,10 +117,10 @@ def run_challenge_agent(source: str) -> str:
     source = source.strip()
 
     if is_url(source):
-        return _extract_from_url(source)
+        return _extract_from_url(source)[0]
 
     pdf_path = Path(source).expanduser().resolve()
-    return _extract_from_pdf(pdf_path)
+    return _extract_from_pdf(pdf_path)[0]
 
 
 def main():
@@ -135,7 +135,4 @@ def main():
         print(result)
     except Exception as exc:
         print(f"Error: {exc}")
-
-
-if __name__ == "__main__":
-    main()
+'''
