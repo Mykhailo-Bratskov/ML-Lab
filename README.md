@@ -28,6 +28,7 @@ This project automates the full early phase of a machine learning competition wo
 - `agents/code_agent.py`: Generates code from the actionable plan.
 - `utils/prompt_input.py`: CLI input helpers.
 - `utils/token_counter.py`: Token accounting helper.
+- `space_for_code`: folder where the code_agent will compile ML pipeline
 
 ## Requirements
 
