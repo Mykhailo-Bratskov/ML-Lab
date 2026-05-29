@@ -1,9 +1,11 @@
 google-genai
 python-dotenv
 pandas
+pyarrow
+openpyxl
 edfio
 pydantic
 langchain
 langchain-community
-langchain-anthropic 
+langchain-anthropic
 langchain-openai
